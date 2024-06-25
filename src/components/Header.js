@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import logo from '../utils/images/logo.png';
 import { Validate, signUpValidate }from '../utils/Validate'
 
 const Header = () => {
@@ -33,13 +32,13 @@ const Header = () => {
        secEmail.current.value,
        secPassword.current.value, 
        confirmPassword.current.value);
-    console.log(secMessege);
+   // console.log(secMessege);
     setSecErrorMessege(secMessege);
   }
   return (
     <div>
       <div className="absolute bg-gradient-to-b from-black w-full h-[400px]">
-        <img className="w-40 h-20" alt="logo" src={logo} />
+        <img className="w-44 h-20" alt="logo" src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png" />
         <form onSubmit={(e) => e.preventDefault()} className="absolute w-96 h-96">
           <div className="absolute w-[450px] h-[650px] bg-black bg-opacity-75 mt-11 ml-[550px]">
             <div className="ml-14 mt-13 pl-4">
