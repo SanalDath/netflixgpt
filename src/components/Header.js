@@ -1,10 +1,16 @@
 import React, { useState, useRef } from 'react';
-import { Validate, signUpValidate }from '../utils/Validate'
+import { Validate, signUpValidate } from '../utils/Validate';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../utils/firebase';
+import { useNavigate } from 'react-router-dom';
+
 
 const Header = () => {
-  const [ isSignInForm, setIsSignInForm ] = useState(true);
-  const [ errorMessege, setErrorMessege ] = useState([]);
-  const [secErrorMessege, setSecErrorMessege ] = useState([]);
+  const navigate = useNavigate();
+  const [isSignInForm, setIsSignInForm] = useState(true);
+  const [errorMessege, setErrorMessege] = useState([]);
+  const [secErrorMessege, setSecErrorMessege] = useState([]);
+  const [warning, setWarning] = useState('Success');
   const email = useRef(null);
   const password = useRef(null);
   const firstName = useRef(null);
@@ -15,30 +21,63 @@ const Header = () => {
 
   const toggleSignup = () => {
     setIsSignInForm(!isSignInForm);
-  }
+  };
+
   const handleSignButton = () => {
-    //validate the form data, we will use a utiity a code inside utils
-   //console.log("email :", email.current.value);
-   //console.log("password :", password.current.value);
-   const messege = Validate(email.current.value, password.current.value)
-   //console.log(messege);
-   setErrorMessege(messege);
-  }
-  
+    const messege = Validate(email.current?.value || "", password.current?.value || "");
+    setErrorMessege(messege);
+    if (messege) return;
+    if (isSignInForm) {
+      signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        navigate("/browse");
+        console.log("is already logged in :",user)
+      })
+      .catch((error) => {
+      const errorCode = error.code;
+      const errorMessege = error.message;
+      console.log(errorCode);
+      console.log(errorMessege);
+        setWarning(errorCode);
+    })
+    }
+
+  };
+
   const handleSignUp = () => {
     const secMessege = signUpValidate(
-       firstName.current.value,
-       lastName.current.value,
-       secEmail.current.value,
-       secPassword.current.value, 
-       confirmPassword.current.value);
-   // console.log(secMessege);
+      firstName.current?.value || "",
+      lastName.current?.value || "",
+      secEmail.current?.value || "",
+      secPassword.current?.value || "",
+      confirmPassword.current?.value || ""
+    );
+    
     setSecErrorMessege(secMessege);
-  }
+    if (secMessege) return;
+
+    if (!isSignInForm) {
+      createUserWithEmailAndPassword(auth, secEmail.current.value, secPassword.current.value)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          
+          console.log("User registered successfully:", user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log("Error code:", errorCode);
+          console.log("Error message:", errorMessage);
+          navigate("/browse");
+          
+        });
+    }
+  };
   return (
     <div>
       <div className="absolute bg-gradient-to-b from-black w-full h-[400px]">
-        <img className="w-44 h-20" alt="logo" src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png" />
+        <img className="w-44 h-20" alt="logo" src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"/>
         <form onSubmit={(e) => e.preventDefault()} className="absolute w-96 h-96">
           <div className="absolute w-[450px] h-[650px] bg-black bg-opacity-75 mt-11 ml-[550px]">
             <div className="ml-14 mt-13 pl-4">
@@ -116,9 +155,13 @@ const Header = () => {
                 Sign up
                 </button>}
                 {errorMessege? errorMessege.map((err, index) => <h1 key={index} className='text-xs text-red-600 mt-4 font-semibold'>{err}</h1>) : 
-                <h1 className='text-sm text-green-600 mt-4 font-semibold'>Success</h1>}
+                  <h1 className={(warning.length < 8 )? "text-sm text-green-600 mt-4 font-semibold" :
+                    "text-sm text-red-600 mt-4 font-semibold"
+                }>{warning}</h1>}
                 {secErrorMessege? secErrorMessege.map((err, index) => <h1 key={index} className='text-xs text-red-600 mt-4 font-semibold'>{err}</h1>) : 
-                <h1 className='text-sm text-green-600 mt-4 font-semibold'>Success</h1>}
+                <h1 className={(warning.length < 8 )? "text-sm text-green-600 mt-4 font-semibold" :
+                    "text-sm text-red-600 mt-4 font-semibold"
+                }>{warning}</h1>}
               </div>
               <div className="mt-5">
                 <h5 className="text-white pl-36">Or</h5>
