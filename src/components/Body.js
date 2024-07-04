@@ -6,6 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 import { useDispatch } from 'react-redux';
 import { addUser } from '../utils/userSlice';
+import ErrorPage from './ErrorPage';
 
 
 const appRouter = createBrowserRouter([
@@ -15,7 +16,10 @@ const appRouter = createBrowserRouter([
   },{
     path: '/browse',
     element: <Browse/>
-  },
+  }, {
+    path: 'error',
+    element: <ErrorPage/>
+  }
 ]);
 
 
@@ -25,11 +29,12 @@ const Body = () => {
    useEffect(() => {
         onAuthStateChanged(auth, (user) => {
           if (user) {
-            const { uid, email, displayName } = user;
+            const { uid, email, displayName, photoURL } = user;
            dispatch(addUser({
               uid: uid,
               email: email,
-              displayName: displayName
+              displayName: displayName,
+              photoURL: photoURL
             }));
           }
          })

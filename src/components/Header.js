@@ -1,11 +1,15 @@
 import React, { useState, useRef } from 'react';
 import { Validate, signUpValidate } from '../utils/Validate';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addUser } from '../utils/userSlice';
+
 
 
 const Header = () => {
+  const dispatch = useDispatch()
   const navigate = useNavigate();
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessege, setErrorMessege] = useState([]);
@@ -31,8 +35,23 @@ const Header = () => {
       signInWithEmailAndPassword(auth, email.current.value, password.current.value)
       .then((userCredential) => {
         const user = userCredential.user;
-        navigate("/browse");
-        console.log("is already logged in :",user)
+        updateProfile(user, {
+          displayName: firstName.current.value,
+          photoURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtRs_rWILOMx5-v3aXwJu7LWUhnPceiKvvDg&s"
+        }).then(() => {
+            const { uid, email, displayName, photoURL } = auth.currentUser;
+             dispatch(addUser({
+              uid: uid,
+              email: email,
+              displayName: displayName,
+              photoURL: photoURL
+            }));
+            navigate("/browse");
+          }).catch((error) => {
+            alert('error');
+            navigate('/error');
+         });
+         console.log("is already logged in :",user)
       })
       .catch((error) => {
       const errorCode = error.code;
@@ -61,7 +80,7 @@ const Header = () => {
       createUserWithEmailAndPassword(auth, secEmail.current.value, secPassword.current.value)
         .then((userCredential) => {
           const user = userCredential.user;
-          
+          navigate('/browse');
           console.log("User registered successfully:", user);
         })
         .catch((error) => {
@@ -69,8 +88,6 @@ const Header = () => {
           const errorMessage = error.message;
           console.log("Error code:", errorCode);
           console.log("Error message:", errorMessage);
-          navigate("/browse");
-          
         });
     }
   };
