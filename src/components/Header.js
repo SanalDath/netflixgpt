@@ -1,15 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { Validate, signUpValidate } from '../utils/Validate';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addUser } from '../utils/userSlice';
+import { NETFLIX_LOGO } from './constents';
 
 
 
 const Header = () => {
-  const dispatch = useDispatch()
   const navigate = useNavigate();
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessege, setErrorMessege] = useState([]);
@@ -35,22 +33,7 @@ const Header = () => {
       signInWithEmailAndPassword(auth, email.current.value, password.current.value)
       .then((userCredential) => {
         const user = userCredential.user;
-        updateProfile(user, {
-          displayName: firstName.current.value,
-          photoURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtRs_rWILOMx5-v3aXwJu7LWUhnPceiKvvDg&s"
-        }).then(() => {
-            const { uid, email, displayName, photoURL } = auth.currentUser;
-             dispatch(addUser({
-              uid: uid,
-              email: email,
-              displayName: displayName,
-              photoURL: photoURL
-            }));
-            navigate("/browse");
-          }).catch((error) => {
-            alert('error');
-            navigate('/error');
-         });
+        navigate('/browse');
          console.log("is already logged in :",user)
       })
       .catch((error) => {
@@ -94,7 +77,7 @@ const Header = () => {
   return (
     <div>
       <div className="absolute bg-gradient-to-b from-black w-full h-[400px]">
-        <img className="w-44 h-20" alt="logo" src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"/>
+        <img className="w-44 h-20" alt="logo" src={NETFLIX_LOGO}/>
         <form onSubmit={(e) => e.preventDefault()} className="absolute w-96 h-96">
           <div className="absolute w-[450px] h-[650px] bg-black bg-opacity-75 mt-11 ml-[550px]">
             <div className="ml-14 mt-13 pl-4">

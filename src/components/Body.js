@@ -5,7 +5,7 @@ import Login from './Login';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 import { useDispatch } from 'react-redux';
-import { addUser } from '../utils/userSlice';
+import { addUser, removeUser } from '../utils/userSlice';
 import ErrorPage from './ErrorPage';
 
 
@@ -24,10 +24,11 @@ const appRouter = createBrowserRouter([
 
 
 const Body = () => {
-  const dispatch = useDispatch()
+  
+  const dispatch = useDispatch();
 
    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
           if (user) {
             const { uid, email, displayName, photoURL } = user;
            dispatch(addUser({
@@ -35,9 +36,13 @@ const Body = () => {
               email: email,
               displayName: displayName,
               photoURL: photoURL
-            }));
+            })); //if user is present this function will set up the store 
+          } else {
+              dispatch(removeUser())
           }
-         })
+        })
+     //unsubscribe when component wil unmout and it will unsubscribe my onAut state
+     return () => unsubscribe()
        }, [dispatch]);
   return (
     <div>
