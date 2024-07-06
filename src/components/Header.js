@@ -34,7 +34,7 @@ const Header = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         navigate('/browse');
-         console.log("is already logged in :",user)
+         //console.log("is already logged in :",user)
       })
       .catch((error) => {
       const errorCode = error.code;
@@ -64,7 +64,7 @@ const Header = () => {
         .then((userCredential) => {
           const user = userCredential.user;
           navigate('/browse');
-          console.log("User registered successfully:", user);
+          //console.log("User registered successfully:", user);
         })
         .catch((error) => {
           const errorCode = error.code;
