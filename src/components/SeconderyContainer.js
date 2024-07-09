@@ -10,7 +10,6 @@ const SeconderyContainer = () => {
   useUpcomingMovies();
   useTopRatedMovies();
   usePopularMovies();
-    //console.log("movies",movies)
   return (
     <div className=' bg-black'>
       <MovieList title={"Now Playing"} movies={movies?.nowPlayingMovies} />

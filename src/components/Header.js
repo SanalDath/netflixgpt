@@ -34,13 +34,11 @@ const Header = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         navigate('/browse');
-         //console.log("is already logged in :",user)
+         
       })
       .catch((error) => {
       const errorCode = error.code;
       const errorMessege = error.message;
-      console.log(errorCode);
-      console.log(errorMessege);
         setWarning(errorCode);
     })
     }
@@ -64,13 +62,10 @@ const Header = () => {
         .then((userCredential) => {
           const user = userCredential.user;
           navigate('/browse');
-          //console.log("User registered successfully:", user);
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log("Error code:", errorCode);
-          console.log("Error message:", errorMessage);
         });
     }
   };

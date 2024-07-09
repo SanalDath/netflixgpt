@@ -17,3 +17,41 @@ export const TOP_RATED_API = 'https://api.themoviedb.org/3/movie/top_rated?langu
 export const POPULAR_MOVIES_API = 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1';
 
 export const IMG_CDN = "https://image.tmdb.org/t/p/w780";
+
+export const LANGUAGE_CONFIG = [{
+  key: 1000,
+  identifier: 'en',
+  name: "English",
+},
+{
+  key: 1001,
+  identifier: 'mal',
+  name: "Malayalam",
+},
+{
+  key: 1000,
+  identifier: 'hnd',
+  name: "Hindi",
+},
+{
+  key: 1000,
+  identifier: 'tml',
+  name: "Tamil",
+},
+{
+  key: 1000,
+  identifier: 'spn',
+  name: "Spanish",
+},
+{
+  key: 1000,
+  identifier: 'knd',
+  name: "Kannada",
+},
+{
+  key: 1000,
+  identifier: 'tel',
+  name: "Telungu",
+},
+  
+];
